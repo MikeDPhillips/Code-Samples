@@ -330,7 +330,7 @@ def save_t1_slices_and_labels(
         fig2.clear()
         plt.close("all")
 
-# UTILITIES to get list of directories and matching filenames assuming MASI 
+# UTILITIES to get list of directories and matching filenames assuming MASI
 # lab standard file structure
 # <root>/<subject_id>/<session_id>/<scan_id>/NIFTI/*.nii.gz
 def get_list_of_scan_dirs(path):
