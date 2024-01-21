@@ -4,8 +4,10 @@
     @author: Mike Phillips, MASI Lab, Vanderbilt University
 
     Args:
-        --projects: All projects you wish to include in the search. Default is CIBS_COPE and CIBS_BRAIN2
-        --subjects: All subjects you wish to include in the search. If None, then delete only orphaned assessors.
+        --projects: All projects you wish to include in the search. 
+            Default is CIBS_COPE and CIBS_BRAIN2
+        --subjects: All subjects you wish to include in the search. 
+            If None, then delete only orphaned assessors.
 
     Typical usage:
         To delete all assessors from a matching subject list:
@@ -16,14 +18,9 @@
             python delete_assessors.py --projects CIBS_COPE CIBS_BRAIN2
 """
 
-import my_utils
-from requests.exceptions import ReadTimeout
 from argparse import ArgumentParser
-
-#Defaults if not changed by arg parser
-PROJECTS = ['CIBS_COPE', 'CIBS_BRAIN2']
-xnat = my_utils.get_interface()
-
+import my_utils  # Abstracts log in details and passwords, not included in repo
+from requests.exceptions import ReadTimeout
 
 def delete_assessor(xnat, proj, subj, sess, assr):
     """Delete a single assessor from XNAT.
@@ -53,25 +50,38 @@ def delete_assessor(xnat, proj, subj, sess, assr):
 
 
 def delete_assessors(xnat, assessors_to_delete):
+    """
+    Deletes assessors from XNAT based on the provided list of assessors to delete.
+
+    Args:
+        xnat (XNAT): The XNAT instance to connect to.
+        assessors_to_delete (list): A list of dictionaries containing information 
+            about the assessors to delete.
+            Each dictionary should have the following keys:
+            - project_id (str): The ID of the project.
+            - subject_label (str): The label of the subject.
+            - session_label (str): The label of the session.
+            - label (str): The label of the assessor.
+
+    Returns:
+        None
+    """
     count = 0
     total_length = len(assessors_to_delete)
     if total_length == 0:
         print("No assessors to delete.")
         return
-    
+
     for s in assessors_to_delete:
         count += 1
         print(f"Working on #{count}. {total_length-count} remaining.")
-        if delete_assessor(xnat, 
-                           s['project_id'], 
-                           s['subject_label'], 
-                           s['session_label'], 
-                           s['label']):           
+        if delete_assessor(
+            xnat, s["project_id"], s["subject_label"], s["session_label"], s["label"]
+        ):
             print(f"Deleted {s['label']}")
         else:
             print(f"Failed to delete {s['label']}")
 
-    
 
 def delete_all_assessors(xnat, proj, subject):
     """Delete all assessors for the given project and subject.
@@ -87,10 +97,10 @@ def delete_all_assessors(xnat, proj, subject):
     """
 
     assessors = xnat.list_project_assessors(proj)
-    assessors_to_delete = [a for a in assessors if a['subject_label'] == subject]
+    assessors_to_delete = [a for a in assessors if a["subject_label"] == subject]
     delete_assessors(xnat, assessors_to_delete)
-    
-    
+
+
 def delete_orphaned_assessors(xnat, projects):
     """Delete assessors that are not associated with a session or subject.
 
@@ -105,23 +115,32 @@ def delete_orphaned_assessors(xnat, projects):
     """
     for proj in projects:
         assessors = xnat.list_project_assessors(proj)
-        # Find all assessors who have a subject_label or session_label that does not 
+        # Find all assessors who have a subject_label or session_label that does not
         # match the appropriate label.
-        subj_delete = [a for a in assessors if a['subject_label']
-                    != a['label'].split('-x-')[1]]
-        sess_delete = [a for a in assessors if a['session_label']
-                    != a['label'].split('-x-')[2]]
+        subj_delete = [
+            a for a in assessors if a["subject_label"] != a["label"].split("-x-")[1]
+        ]
+        sess_delete = [
+            a for a in assessors if a["session_label"] != a["label"].split("-x-")[2]
+        ]
         assessors_to_delete = subj_delete + sess_delete
         delete_assessors(xnat, assessors_to_delete)
 
- 
-if __name__ == '__main__':
-   
-    parser = ArgumentParser(description='Delete matching subjects assessors from XNAT or orphaned assessors')
-    parser.add_argument('-p', '--projects', nargs='+', help='List of projects to check')
-    parser.add_argument('-s', '--subjects', nargs='+', help='List of subjects to check')
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.1')
-    
+
+if __name__ == "__main__":
+
+
+    # Defaults if not changed by arg parser
+    PROJECTS = ["CIBS_COPE", "CIBS_BRAIN2"]
+    xnat_interface = my_utils.get_interface()
+
+    parser = ArgumentParser(
+        description="Delete matching subjects assessors from XNAT or orphaned assessors"
+    )
+    parser.add_argument("-p", "--projects", nargs="+", help="List of projects to check")
+    parser.add_argument("-s", "--subjects", nargs="+", help="List of subjects to check")
+    parser.add_argument("-v", "--version", action="version", version="%(prog)s 1.1")
+
     args = parser.parse_args()
     if args.projects:
         PROJECTS = args.projects
@@ -129,11 +148,10 @@ if __name__ == '__main__':
         SUBJECTS = args.subjects
     else:
         SUBJECTS = None
-        
+
     if SUBJECTS:
         print(f"Deleting assessors from {PROJECTS} for subjects {SUBJECTS}")
+        delete_all_assessors(xnat_interface, PROJECTS, SUBJECTS)
     else:
         print(f"Deleting orphaned assessors from {PROJECTS}")
-        delete_orphaned_assessors(xnat, PROJECTS)
-
-
+        delete_orphaned_assessors(xnat_interface, PROJECTS)
