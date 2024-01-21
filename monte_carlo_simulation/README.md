@@ -1,20 +1,19 @@
 # Monte Carlo Psychrotolerant Sporeformer Simulation v3.0
 
 ## Overview
-Welcome to my Monte Carlo Psychrotolerant Sporeformer Simulation project. This script is a robust example of my capabilities in statistical modeling and simulation, applied in the context of dairy spoilage prediction. It demonstrates the application of Monte Carlo methods to estimate bacterial growth in milk, using various growth models.
+This R script is an example of my capabilities in statistical modeling and simulation, applied in the context of dairy spoilage prediction. It demonstrates the application of Monte Carlo methods to estimate bacterial growth in milk, using various growth models. Current expiration dates are not based on rigorous modeling and techniques
+such as this could improve estimates and drastically lower the amount of food spoilage due to bacterial growth.
 
 ## Key Features of the Script
-- **Statistical Growth Models:** Implements Buchanan, Baranyi, and Gompertz models to simulate bacterial growth, showcasing my ability to apply complex statistical methods in practical scenarios.
+- **Statistical Growth Models:** Implements Buchanan, Baranyi, and Gompertz models to simulate bacterial growth, showing my ability to apply complex statistical methods in practical scenarios.
 - **Data Handling and Processing:** Involves importing, cleaning, and preparing data for analysis, reflecting my skills in managing and manipulating data sets.
 - **Monte Carlo Simulation:** Utilizes Monte Carlo techniques to model variability in bacterial growth, demonstrating my proficiency in probabilistic modeling and simulation.
-- **Data Visualization:** Generates bar charts to visualize the simulation results, highlighting my experience in data presentation and interpretation.
 
 ## Relevance to Data Science
 While the script is specifically tailored to dairy spoilage modeling, the underlying principles and techniques are broadly applicable across various data science domains. Key skills demonstrated in this script include:
 - **Complex Problem Solving:** Ability to conceptualize and implement solutions to complex, real-world problems using data-driven approaches.
 - **Statistical Analysis and Modeling:** Proficiency in applying statistical models to interpret and predict data patterns.
 - **Simulation Techniques:** Expertise in using simulation methods to estimate and forecast outcomes under uncertainty.
-- **Data Visualization:** Skill in creating visual representations of data to convey findings effectively.
 
 ## Usage
 The script is designed to be used in an R environment. Adjust `seed_value` for reproducibility, set file paths for data input, and run the script to perform the simulation and generate visualizations.
